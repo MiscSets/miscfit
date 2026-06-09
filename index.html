@@ -39,15 +39,19 @@
 
       <div class="card card-agua">
         <h3><i class="fa-solid fa-droplet blue-neon"></i> Controle de Hidratação</h3>
-        <div class="agua-progress-container">
-          <div class="progress-bar-bg">
-            <div id="barra-agua" class="progress-bar-fill" style="width: 0%"></div>
-          </div>
-          <p class="progress-texto"><span id="agua-atual">0</span> / <span id="agua-meta">0</span> ml</p>
-        </div>
+<div class="agua-progress-container">
+  <div class="progress-bar-bg" style="position: relative;">
+    <!-- Barra Principal Azul -->
+    <div id="barra-agua" class="progress-bar-fill" style="width: 0%"></div>
+    <!-- NOVA Barra de Excedente Laranja (Sobreposta) -->
+    <div id="barra-agua-excedente" class="progress-bar-fill-excedente"></div>
+  </div>
+  <p class="progress-texto"><span id="agua-atual">0</span> / <span id="agua-meta">0</span> ml</p>
+</div>
+		  
         <div class="agua-botoes">
-          <button class="btn-agua" onclick="adicionarAgua(300)"><i class="fa-solid fa-glass-water"></i> +300ml</button>
-          <button class="btn-agua" onclick="adicionarAgua(500)"><i class="fa-solid fa-bottle-water"></i> +500ml</button>
+          <button class="btn-agua" onclick="adicionarAgua(250)"><i class="fa-solid fa-glass-water"></i> +250ml</button>
+          <button class="btn-agua" onclick="adicionarAgua(750)"><i class="fa-solid fa-bottle-water"></i> +750ml</button>
         </div>
       </div>
 
