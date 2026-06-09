@@ -1,0 +1,451 @@
+/* ==========================================================================
+   RESET E CONFIGURAÇÕES GERAIS
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --bg-principal: #0d0f12;       /* Preto azulado profundo */
+  --bg-card: #161a22;            /* Cinza escuro azulado para os blocos */
+  --texto-claro: #f0f4f8;        /* Branco fosco para não agredir os olhos */
+  --texto-mutado: #7a8b9e;       /* Cinza para descrições menores */
+  --azul-neon: #00e5ff;          /* Azul cyan elétrico */
+  --verde-neon: #39ff14;         /* Verde neon para metas batidas e progresso */
+  --borda-suave: rgba(255, 255, 255, 0.05);
+}
+
+body {
+  background-color: var(--bg-principal);
+  color: var(--texto-claro);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   CABEÇALHO (HEADER)
+   ========================================================================== */
+.app-header {
+  background-color: var(--bg-card);
+  padding: 18px 16px;
+  border-bottom: 1px solid var(--borda-suave);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.app-header h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.app-header .highlight {
+  color: var(--verde-neon);
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+}
+
+#user-status {
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--azul-neon);
+}
+
+/* ==========================================================================
+   CONTEÚDO E SEÇÕES (MAIN)
+   ========================================================================== */
+.app-content {
+  flex: 1;
+  padding: 16px;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 75px; /* Evita que o conteúdo suma atrás da nav inferior */
+}
+
+.app-section {
+  display: none; /* Esconde todas as telas por padrão */
+}
+
+.app-section.active {
+  display: block; /* Só exibe a tela que estiver ativa */
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* CARDS CONFIGURAÇÃO */
+.card {
+  background-color: var(--bg-card);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 16px;
+  border: 1px solid var(--borda-suave);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   CARD DE MACROS NUTRICIONAIS
+   ========================================================================== */
+.macros-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  text-align: center;
+}
+
+.macro-box {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 12px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--borda-suave);
+}
+
+.highlight-box {
+  border-color: rgba(57, 255, 20, 0.2);
+  background: rgba(57, 255, 20, 0.02);
+}
+
+.macro-qtd {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.macro-lbl {
+  font-size: 0.75rem;
+  color: var(--texto-mutado);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+#macro-cal-meta { color: var(--verde-neon); }
+#macro-prot-consumidas { color: var(--azul-neon); }
+
+/* ==========================================================================
+   CONTROLE DE HIDRATAÇÃO (ÁGUA)
+   ========================================================================== */
+.blue-neon { color: var(--azul-neon); }
+
+.agua-progress-container {
+  margin: 14px 0;
+  text-align: center;
+}
+
+.progress-bar-bg {
+  background-color: rgba(255, 255, 255, 0.05);
+  height: 12px;
+  border-radius: 6px;
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar-fill {
+  background: linear-gradient(90deg, #00b0ff, var(--azul-neon));
+  height: 100%;
+  border-radius: 6px;
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-texto {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.agua-botoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn-agua {
+  background-color: rgba(0, 229, 255, 0.06);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  color: var(--azul-neon);
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-agua:active {
+  background-color: var(--azul-neon);
+  color: var(--bg-principal);
+  transform: scale(0.97);
+}
+
+/* ==========================================================================
+   INPUTS E FORMULÁRIOS
+   ========================================================================== */
+.input-group {
+  margin-bottom: 14px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--texto-mutado);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.input-group input, .input-group select {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--borda-suave);
+  padding: 12px;
+  border-radius: 10px;
+  color: var(--texto-claro);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-group input:focus, .input-group select:focus {
+  border-color: var(--azul-neon);
+}
+
+.btn-action {
+  width: 100%;
+  background: linear-gradient(135deg, #2ae010, #39ff14);
+  color: #000;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(57, 255, 20, 0.2);
+  transition: transform 0.1s;
+}
+
+.btn-action:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================================================
+   PAINEL DE TREINOS
+   ========================================================================== */
+.treino-botoes-bloco {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn-bloco {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--borda-suave);
+  color: var(--texto-claro);
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-bloco:active, .btn-bloco.selected {
+  background-color: var(--bg-principal);
+  border-color: var(--verde-neon);
+  color: var(--verde-neon);
+}
+
+/* ==========================================================================
+   BARRA DE NAVEGAÇÃO INFERIOR
+   ========================================================================== */
+.app-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--borda-suave);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); /* Trata o entalhe inferior de iPhones novos */
+  z-index: 100;
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  color: var(--texto-mutado);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: 25%;
+  transition: color 0.2s;
+}
+
+.nav-item i {
+  font-size: 1.25rem;
+}
+
+.nav-item.active {
+  color: var(--azul-neon);
+}
+
+.nav-item.active i {
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+}
+
+/* ==========================================================================
+   IDENTIDADE DO CRIADOR (ASSINATURA EXCLUSIVA)
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+.assinatura-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  opacity: 0.4; /* Sutil para manter a elegância */
+  transition: opacity 0.3s ease;
+}
+
+.assinatura-container:hover {
+  opacity: 0.8; /* Ganha destaque ao passar o mouse ou tocar */
+}
+
+.assinatura-container .by {
+  font-family: 'Segoe UI', sans-serif; 
+  font-weight: 300;
+  text-transform: lowercase;
+  font-size: 0.70rem;
+  color: var(--texto-mutated);
+  margin-right: 4px;
+}
+
+.assinatura-container .rubrica {
+  font-family: ''Great Vibes', cursive;
+  font-size: 1.6rem;
+  color: var(--azul-neon); /* Alinhado ao azul elétrico do app */
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.4); /* Leve brilho neon na assinatura */
+}
+
+/* ==========================================================================
+   CARDS DE EXERCÍCIOS DINÂMICOS
+   ========================================================================== */
+.card-exercicio-item {
+  border-left: 4px solid var(--azul-neon);
+  margin-top: 12px;
+}
+
+.exercicio-layout {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.img-boneco-calistenia {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 4px;
+}
+
+.exercicio-info {
+  flex: 1;
+}
+
+.exercicio-info h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.meta-info {
+  font-size: 0.85rem;
+  color: var(--texto-mutado);
+  margin-bottom: 10px;
+}
+
+.meta-info i {
+  color: var(--azul-neon);
+}
+
+.inputs-log-treino {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.inputs-log-treino input {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--borda-suave);
+  padding: 8px;
+  border-radius: 6px;
+  color: var(--texto-claro);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.btn-check {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--borda-suave);
+  color: var(--texto-claro);
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-check:active {
+  transform: scale(0.98);
+}

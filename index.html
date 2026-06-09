@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MiscSets Fitness</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-container">
+      <h1>MiscSets <span class="highlight">Fit</span></h1>
+      <div id="user-status"><i class="fa-solid fa-user"></i> <span id="lbl-peso">--.-</span> kg</div>
+    </div>
+  </header>
+
+  <main class="app-content">
+    
+    <section id="tela-diario" class="app-section active">
+      <div class="card card-macros">
+        <h3><i class="fa-solid fa-fire-flame-curved"></i> Resumo Diário</h3>
+        <div class="macros-grid">
+          <div class="macro-box">
+            <span class="macro-qtd" id="macro-cal-consumidas">0</span>
+            <span class="macro-lbl">Consumidas</span>
+          </div>
+          <div class="macro-box highlight-box">
+            <span class="macro-qtd" id="macro-cal-meta">0</span>
+            <span class="macro-lbl">Meta Kcal</span>
+          </div>
+          <div class="macro-box">
+            <span class="macro-qtd" id="macro-prot-consumidas">0</span>
+            <span class="macro-lbl">Proteínas (<span id="macro-prot-meta">0</span>g)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-agua">
+        <h3><i class="fa-solid fa-droplet blue-neon"></i> Controle de Hidratação</h3>
+        <div class="agua-progress-container">
+          <div class="progress-bar-bg">
+            <div id="barra-agua" class="progress-bar-fill" style="width: 0%"></div>
+          </div>
+          <p class="progress-texto"><span id="agua-atual">0</span> / <span id="agua-meta">0</span> ml</p>
+        </div>
+        <div class="agua-botoes">
+          <button class="btn-agua" onclick="adicionarAgua(300)"><i class="fa-solid fa-glass-water"></i> +300ml</button>
+          <button class="btn-agua" onclick="adicionarAgua(500)"><i class="fa-solid fa-bottle-water"></i> +500ml</button>
+        </div>
+      </div>
+
+      <div class="card card-alimento">
+        <h3><i class="fa-solid fa-utensils"></i> Registrar Alimento</h3>
+        <form id="form-refeicao" onsubmit="event.preventDefault();">
+          <div class="input-group">
+            <label for="select-refeicao">Refeição</label>
+            <select id="select-refeicao">
+              <option value="Café da Manhã">Café da Manhã</option>
+              <option value="Almoço">Almoço</option>
+              <option value="Janta">Janta</option>
+              <option value="Lanche">Lanche</option>
+            </select>
+          </div>
+          
+          <div class="input-group">
+            <label for="input-alimento">Alimento</label>
+            <input type="text" id="input-alimento" placeholder="Ex: Peito de Frango Grelhado">
+          </div>
+
+          <div class="input-group">
+            <label for="input-qtd">Quantidade (g ou ml)</label>
+            <input type="number" id="input-qtd" placeholder="Ex: 150">
+          </div>
+
+          <button type="button" class="btn-action" onclick="enviarRefeicao()">Lançar no Diário</button>
+        </form>
+      </div>
+	<div class="assinatura-container">
+        <span class="by ">by</span><span class="rubrica">Sz</span>
+      </div>
+    </section>
+
+    <section id="tela-treinos" class="app-section">
+      <div class="card card-treino-selecao">
+        <h3><i class="fa-solid fa-dumbbell"></i> Rotina de Calistenia</h3>
+        <p>Selecione o bloco de treino do dia:</p>
+        <div class="treino-botoes-bloco">
+          <button class="btn-bloco" onclick="carregarBlocoTreino('Treino A')">Treino A</button>
+          <button class="btn-bloco" onclick="carregarBlocoTreino('Treino B')">Treino B</button>
+        </div>
+      </div>
+
+      <div id="container-exercicios" class="exercicios-lista-container">
+        </div>
+    </section>
+
+  </main>
+
+  <nav class="app-nav">
+    <button class="nav-item active" onclick="navegarPara('tela-diario', this)">
+      <i class="fa-solid fa-calendar-day"></i>
+      <span>Diário</span>
+    </button>
+    <button class="nav-item" onclick="navegarPara('tela-treinos', this)">
+      <i class="fa-solid fa-person-running"></i>
+      <span>Treinos</span>
+    </button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
