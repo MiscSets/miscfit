@@ -245,6 +245,12 @@ body {
   border-color: var(--azul-neon);
 }
 
+/* FIX: Garante contraste legível nas opções de refeição no Dark Mode */
+.input-group select option {
+  background-color: var(--bg-card);
+  color: var(--texto-claro);
+}
+
 .btn-action {
   width: 100%;
   background: linear-gradient(135deg, #2ae010, #39ff14);
@@ -358,12 +364,12 @@ body {
   font-weight: 300;
   text-transform: lowercase;
   font-size: 0.70rem;
-  color: var(--texto-mutated);
+  color: var(--texto-mutado);
   margin-right: 4px;
 }
 
 .assinatura-container .rubrica {
-  font-family: ''Great Vibes', cursive;
+  font-family: 'Great Vibes', cursive; /* Sintaxe de aspas corrigida */
   font-size: 1.6rem;
   color: var(--azul-neon); /* Alinhado ao azul elétrico do app */
   text-shadow: 0 0 8px rgba(0, 229, 255, 0.4); /* Leve brilho neon na assinatura */
