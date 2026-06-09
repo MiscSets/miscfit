@@ -181,6 +181,18 @@ body {
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.progress-bar-fill-excedente {
+  background: linear-gradient(90deg, #ff6d00, #ffab00);
+  height: 100%;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(255, 109, 0, 0.6);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%; /* Começa zerada */
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .progress-texto {
   font-size: 0.95rem;
   font-weight: 600;
