@@ -52,6 +52,7 @@ function navegarPara(idTela, botaoClicado) {
  * BUSCA DE DADOS: carregarPerfil
  * Consome o endpoint 'buscarPerfil' do backend e renderiza as metas na tela.
  */
+document.getElementById("lbl-peso").innerText = Number(dadosUsuario.pesoAtual).toFixed(1) + " kg";
 async function carregarPerfil() {
   try {
     const resposta = await fetch(`${API_URL}?action=buscarPerfil`);
