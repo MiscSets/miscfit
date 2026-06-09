@@ -5,7 +5,7 @@
  */
 
 // CONFIGURAÇÃO: URL fornecida pelo seu Google Apps Script (Mude para /exec ao subir para produção)
-const API_URL = 'https://script.google.com/macros/s/AKfycbwYRBo2fIpYZ5d3IsyzqZzqoAGqP-8ZENITKQdGUnA/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycby-J5nLEW5bN2zZLcOZVSTeJJsiZHhNU4-I2OlX8dClAvCPWSC8MOTNsGwCVErizsoe/exec';
 
 // Estado global do aplicativo para evitar requisições repetidas
 let dadosUsuario = null;
