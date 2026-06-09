@@ -1,15 +1,17 @@
 /**
  * MiscFit - Core Engine (Frontend)
  * Gerencia a navegação, chamadas de API e interações da interface.
+ * Powered by MiscSets.
  */
 
-// CONFIGURAÇÃO: URL fornecida pelo seu Google Apps Script (Corrigida com aspas)
-const API_URL = 'https://script.google.com/macros/s/AKfycby-J5nLEW5bN2zZLcOZVSTeJJsiZHhNU4-I2OlX8dClAvCPWSC8MOTNsGwCVErizsoe/exec';
+// CONFIGURAÇÃO: URL fornecida pelo seu Google Apps Script (Mude para /exec ao subir para produção)
+const API_URL = 'https://script.google.com/macros/s/AKfycbwYRBo2fIpYZ5d3IsyzqZzqoAGqP-8ZENITKQdGUnA/exec';
 
 // Estado global do aplicativo para evitar requisições repetidas
 let dadosUsuario = null;
 let listaAlimentos = [];
 let listaTreinosNativos = []; // Guarda o catálogo de exercícios vindo do Sheets
+let totalAguaConsumidaHoje = 0;
 
 // Executa automaticamente assim que a página carrega no navegador
 document.addEventListener("DOMContentLoaded", () => {
@@ -24,6 +26,7 @@ async function inicializarApp() {
   await carregarPerfil();
   await carregarAlimentos();
   await carregarTreinosNativos(); // Inicializa o catálogo de calistenia
+  await sincronizarConsumoDiario(); // SINCRONIZAÇÃO: Puxa o que já foi consumido hoje
 }
 
 /**
@@ -31,21 +34,17 @@ async function inicializarApp() {
  * Alterna as seções ativas e muda o estado visual dos botões da nav bar.
  */
 function navegarPara(idTela, botaoClicado) {
-  // Esconde todas as seções
   document.querySelectorAll('.app-section').forEach(section => {
     section.classList.remove('active');
   });
   
-  // Exibe a seção selecionada
   const telaAlvo = document.getElementById(idTela);
   if (telaAlvo) telaAlvo.classList.add('active');
   
-  // Remove o estado ativo de todos os botões da barra de navegação
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.classList.remove('active');
   });
   
-  // Adiciona o estado ativo no botão que foi clicado
   if (botaoClicado) botaoClicado.classList.add('active');
 }
 
@@ -67,7 +66,7 @@ async function carregarPerfil() {
       document.getElementById("macro-prot-meta").innerText = dadosUsuario.proteinaMeta;
       document.getElementById("agua-meta").innerText = dadosUsuario.metaAgua;
       
-      atualizarProgressoAguaVisual(0); // Inicia o contador de água zerado
+      atualizarProgressoAguaVisual(0); 
     } else {
       alert("Erro ao ler perfil: " + resultado.mensagem);
     }
@@ -94,16 +93,40 @@ async function carregarAlimentos() {
 }
 
 /**
+ * RECURSO: SINCRONIZAÇÃO HISTÓRICA DO DIA
+ * Puxa do backend o somatório de água e macros já registrados na data de hoje.
+ */
+async function sincronizarConsumoDiario() {
+  try {
+    const resposta = await fetch(`${API_URL}?action=buscarConsumoHoje`);
+    const resultado = await resposta.json();
+    
+    if (resultado.status === "sucesso") {
+      // Atualiza os contadores globais com os dados reais salvos no Sheets
+      totalAguaConsumidaHoje = resultado.dados.aguaTotal || 0;
+      const caloriasHoje = resultado.dados.caloriasTotal || 0;
+      const proteinasHoje = resultado.dados.proteinasTotal || 0;
+      
+      // Renderiza os valores recuperados direto na interface
+      document.getElementById("macro-cal-consumidas").innerText = caloriasHoje.toFixed(0);
+      document.getElementById("macro-prot-consumidas").innerText = proteinasHoje.toFixed(1);
+      atualizarProgressoAguaVisual(totalAguaConsumidaHoje);
+      
+      console.log("Sincronização diária concluída com sucesso.");
+    }
+  } catch (erro) {
+    console.error("Erro ao sincronizar consumo do dia:", erro);
+  }
+}
+
+/**
  * RECURSO: CONTADOR DE ÁGUA
  * Soma a água consumida na tela e envia a requisição de gravação para o Sheets.
  */
-let totalAguaConsumidaHoje = 0;
-
 async function adicionarAgua(quantidadeMl) {
   totalAguaConsumidaHoje += quantidadeMl;
   atualizarProgressoAguaVisual(totalAguaConsumidaHoje);
   
-  // Dispara o salvamento em background no Google Sheets
   try {
     const resposta = await fetch(`${API_URL}?action=salvarAgua&quantidade=${quantidadeMl}`);
     const resultado = await resposta.json();
@@ -115,21 +138,36 @@ async function adicionarAgua(quantidadeMl) {
   }
 }
 
+/**
+ * ATUALIZAÇÃO VISUAL: Sistema Dinâmico de Dupla Barra (Azul / Laranja Excedente)
+ */
 function atualizarProgressoAguaVisual(valorAtual) {
   document.getElementById("agua-atual").innerText = valorAtual;
   const meta = dadosUsuario ? dadosUsuario.metaAgua : 2000;
   
-  // Calcula a porcentagem e limita em no máximo 100% da barra
-  let porcentagem = (valorAtual / meta) * 100;
-  if (porcentagem > 100) porcentagem = 100;
+  const barraAzul = document.getElementById("barra-agua");
+  const barraLaranja = document.getElementById("barra-agua-excedente");
   
-  // Altera dinamicamente a largura da barra CSS com efeito animado
-  document.getElementById("barra-agua").style.width = `${porcentagem}%`;
+  if (valorAtual <= meta) {
+    // Cenário Normal: Abaixo ou igual à meta (Apenas a barra azul enche)
+    let porcentagemAzul = (valorAtual / meta) * 100;
+    if (barraAzul) barraAzul.style.width = `${porcentagemAzul}%`;
+    if (barraLaranja) barraLaranja.style.width = `0%`; // Oculta a laranja
+  } else {
+    // Cenário de Super-Hidratação: Passou da meta!
+    if (barraAzul) barraAzul.style.width = `100%`; // Trava a azul em 100%
+    
+    // Calcula quanto passou da meta e joga na proporção da segunda barra (limite máximo de +100%)
+    let excedente = valorAtual - meta;
+    let porcentagemLaranja = (excedente / meta) * 100;
+    if (porcentagemLaranja > 100) porcentagemLaranja = 100;
+    
+    if (barraLaranja) barraLaranja.style.width = `${porcentagemLaranja}%`;
+  }
 }
 
 /**
  * RECURSO: SALVAR REFEIÇÃO
- * Captura os dados do formulário e realiza o envio para o diário do Sheets.
  */
 async function enviarRefeicao() {
   const refeicao = document.getElementById("select-refeicao").value;
@@ -178,7 +216,6 @@ async function enviarRefeicao() {
 
 /**
  * BUSCA DE DADOS: carregarTreinosNativos
- * Baixa o catálogo de exercícios da aba CADASTRO_TREINOS da planilha.
  */
 async function carregarTreinosNativos() {
   try {
@@ -194,8 +231,7 @@ async function carregarTreinosNativos() {
 }
 
 /**
- * RECURSO: MONTAGEM DINÂMICA DA ROTINA (Sua Ideia Chave!)
- * Filtra os exercícios pelo bloco clicado (Treino A ou B) e monta os cards com fotos na tela.
+ * RECURSO: MONTAGEM DINÂMICA DA ROTINA
  */
 function carregarBlocoTreino(bloco) {
   document.querySelectorAll('.btn-bloco').forEach(btn => {
@@ -206,7 +242,6 @@ function carregarBlocoTreino(bloco) {
   const container = document.getElementById("container-exercicios");
   container.innerHTML = ""; 
 
-  // Filtra apenas os exercícios do bloco clicado
   const exerciciosDoBloco = listaTreinosNativos.filter(t => t.bloco.toLowerCase() === bloco.toLowerCase());
 
   if (exerciciosDoBloco.length === 0) {
@@ -214,12 +249,10 @@ function carregarBlocoTreino(bloco) {
     return;
   }
 
-  // Percorre cada exercício da planilha e constrói o card na tela
   exerciciosDoBloco.forEach((ex, index) => {
     const cardExercicios = document.createElement("div");
     cardExercicios.className = "card card-exercicio-item";
     
-    // Imagem padrão caso o campo esteja em branco no Sheets
     const urlImagem = ex.urlImagem || "https://via.placeholder.com/150?text=Calistenia";
 
     cardExercicios.innerHTML = `
@@ -246,7 +279,6 @@ function carregarBlocoTreino(bloco) {
 
 /**
  * RECURSO: CONCLUIR EXERCÍCIO
- * Dispara os dados digitados direto para a aba LOG_TREINOS do Sheets.
  */
 async function concluirExercicioNoSheets(bloco, nomeExercicio, index) {
   const seriesFeitas = document.getElementById(`log-series-${index}`).value;
