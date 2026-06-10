@@ -70,7 +70,11 @@
           
           <div class="input-group">
             <label for="input-alimento">Alimento</label>
-            <input type="text" id="input-alimento" placeholder="Ex: Peito de Frango Grelhado">
+		    <!-- Campo de texto conectado à lista de sugestões -->
+			<input type="text" id="txt-alimento" placeholder="Ex: X-Burguer" list="lista-alimentos">
+
+			<!-- O contêiner que o JavaScript vai preencher com os alimentos da planilha -->
+			<datalist id="lista-alimentos"></datalist>
           </div>
 
           <div class="input-group">
