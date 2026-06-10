@@ -22,11 +22,21 @@ document.addEventListener("DOMContentLoaded", () => {
  * Faz a carga inicial de todos os módulos conectados ao Sheets.
  */
 async function inicializarApp() {
-  console.log("Inicializando MiscFit Engine...");
-  await carregarPerfil();
-  await carregarAlimentos();
-  await carregarTreinosNativos(); // Inicializa o catálogo de calistenia
-  await sincronizarConsumoDiario(); // SINCRONIZAÇÃO: Puxa o que já foi consumido hoje
+  console.log("Inicializando MiscFit Engine em modo paralelo...");
+  
+  try {
+    // Dispara as 4 requisições ao mesmo tempo. O app só vai demorar o tempo da requisição mais lenta!
+    await Promise.all([
+      carregarPerfil(),
+      carregarAlimentos(),
+      carregarTreinosNativos(),
+      sincronizarConsumoDiario() // Agora a água roda no milissegundo zero junto com o resto!
+    ]);
+    
+    console.log("Todos os módulos do MiscFit foram carregados com sucesso!");
+  } catch (erro) {
+    console.error("Erro durante o carregamento paralelo do app:", erro);
+  }
 }
 
 /**
