@@ -75,8 +75,8 @@ async function carregarPerfil() {
       document.getElementById("macro-cal-meta").innerText = dadosUsuario.caloriasMeta;
       document.getElementById("macro-prot-meta").innerText = dadosUsuario.proteinaMeta;
       document.getElementById("agua-meta").innerText = dadosUsuario.metaAgua;
-      
-      atualizarProgressoAguaVisual(0); 
+      // Em vez de zerar (0), passa a variável global que guarda a água do dia!
+      atualizarProgressoAguaVisual(totalAguaConsumidaHoje);
     } else {
       alert("Erro ao ler perfil: " + resultado.mensagem);
     }
