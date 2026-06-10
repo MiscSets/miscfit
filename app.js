@@ -52,7 +52,6 @@ function navegarPara(idTela, botaoClicado) {
  * BUSCA DE DADOS: carregarPerfil
  * Consome o endpoint 'buscarPerfil' do backend e renderiza as metas na tela.
  */
-document.getElementById("lbl-peso").innerText = Number(dadosUsuario.pesoAtual).toFixed(1) + " kg";
 async function carregarPerfil() {
   try {
     const resposta = await fetch(`${API_URL}?action=buscarPerfil`);
@@ -77,7 +76,25 @@ async function carregarPerfil() {
 }
 
 /**
- * BUSCA DE DADOS: carregarAlimentos
+ * INTERFACE: atualizarSugestoesAlimentos
+ * Preenche o datalist com os alimentos cadastrados na planilha
+ */
+function atualizarSugestoesAlimentos(alimentos) {
+  const datalist = document.getElementById("lista-alimentos");
+  
+  // Limpa sugestões antigas para não duplicar
+  datalist.innerHTML = "";
+  
+  // Roda cada alimento da planilha e cria uma opção para o buscador
+  alimentos.forEach(alimento => {
+    const option = document.createElement("option");
+    option.value = alimento.nome; // O que vai ser escrito no campo (ex: "Magic Toast Original")
+    datalist.appendChild(option);
+  });
+}
+
+/**
+ * BUSCA DE DADOS: carregarAlimentos (ATUALIZADO COM AUTOCOMPLETE)
  * Baixa a lista de alimentos cadastrados da planilha para uso interno do app.
  */
 async function carregarAlimentos() {
@@ -87,6 +104,10 @@ async function carregarAlimentos() {
     if (resultado.status === "sucesso") {
       listaAlimentos = resultado.dados;
       console.log(`${listaAlimentos.length} alimentos carregados localmente.`);
+      
+      // TOQUE FINAL: Alimenta o datalist do HTML com os alimentos que acabaram de vir do Sheets
+      atualizarSugestoesAlimentos(listaAlimentos);
+      
     }
   } catch (erro) {
     console.error("Erro ao carregar lista de alimentos:", erro);
