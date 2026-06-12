@@ -618,7 +618,7 @@ body {
   border-radius: 2px;
 }
 
-/* Botões individuais de Alimentos */
+/* Botões individuais de Alimentos com Efeito Neon Avançado */
 .item-alimento-btn {
   width: 100%;
   background-color: rgba(255, 255, 255, 0.02);
@@ -632,7 +632,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: all 0.15s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.15s ease;
 }
 
 .item-alimento-btn .macro-info-tag {
@@ -642,16 +642,32 @@ body {
   padding: 4px 8px;
   border-radius: 6px;
   border: 1px solid var(--borda-suave);
+  transition: all 0.2s ease;
 }
 
+/* INTERATIVIDADE PC: Ao passar o mouse, acende a borda em Verde Neon */
+@media (hover: hover) {
+  .item-alimento-btn:hover {
+    border-color: var(--verde-neon);
+    background-color: rgba(57, 255, 20, 0.02);
+    box-shadow: 0 0 8px rgba(57, 255, 20, 0.15);
+  }
+  .item-alimento-btn:hover .macro-info-tag {
+    border-color: rgba(57, 255, 20, 0.3);
+    color: var(--verde-neon);
+  }
+}
+
+/* INTERATIVIDADE CELULAR / CLIQUE REFEITO: Ao clicar/tocar, pisca em Azul Neon */
 .item-alimento-btn:active {
-  background-color: var(--azul-neon);
-  color: #000;
-  border-color: var(--azul-neon);
+  background-color: var(--azul-neon) !important;
+  color: #000 !important;
+  border-color: var(--azul-neon) !important;
+  box-shadow: 0 0 12px var(--azul-neon) !important;
 }
 
 .item-alimento-btn:active .macro-info-tag {
-  color: #000;
-  border-color: rgba(0,0,0,0.1);
-  background-color: rgba(0,0,0,0.05);
+  color: #000 !important;
+  border-color: rgba(0,0,0,0.2) !important;
+  background-color: rgba(0,0,0,0.08) !important;
 }
