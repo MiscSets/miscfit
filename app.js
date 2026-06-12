@@ -331,7 +331,7 @@ async function concluirExercicioNoSheets(bloco, nomeExercicio, index) {
 
 /**
  * INTERFACE: gerarBotoesAlimentosModal
- * Cria a listagem de botões dentro do modal dinamicamente com suporte a futuras adições.
+ * Cria a listagem de botões dentro do modal dinamicamente incluindo Gorduras.
  */
 function gerarBotoesAlimentosModal(alimentos) {
   const containerLista = document.getElementById("lista-botoes-alimentos");
@@ -340,32 +340,27 @@ function gerarBotoesAlimentosModal(alimentos) {
   containerLista.innerHTML = "";
   
   if (!alimentos || alimentos.length === 0) {
-    containerLista.innerHTML = `<p style="text-align:center; color:var(--texto-mutado); padding:20px;">Nenhum alimento encontrado ou carregando...</p>`;
+    containerLista.innerHTML = `<p style="text-align:center; color:var(--texto-mutado); padding:20px;">Nenhum alimento encontrado...</p>`;
     return;
   }
   
   alimentos.forEach(alimento => {
-    // Tratamento de segurança: garante que o código ache o nome independente do mapeamento
     const nome = alimento.nome || alimento.Alimento || "Alimento sem nome";
     
-    // Tratamento de segurança para os macros (evita quebrar se vier null, undefined ou string vazia)
-    let kcal = 0;
-    if (alimento.calorias !== undefined) kcal = parseFloat(alimento.calorias);
-    else if (alimento.Calorias !== undefined) kcal = parseFloat(alimento.Calorias);
-    
-    let prot = 0;
-    if (alimento.proteinas !== undefined) prot = parseFloat(alimento.proteinas);
-    else if (alimento.Proteinas !== undefined) prot = parseFloat(alimento.Proteinas);
+    // Recupera os 3 macros tratados com segurança do back-end
+    let kcal = parseFloat(alimento.calorias || 0);
+    let prot = parseFloat(alimento.proteinas || 0);
+    let gord = parseFloat(alimento.gorduras || 0); // <-- Nova variável capturando os lipídios
 
     const botao = document.createElement("button");
     botao.type = "button";
     botao.className = "item-alimento-btn";
     botao.setAttribute("data-nome", nome.toLowerCase());
     
-    // Injeta o design com os valores tratados com segurança
+    // Injeta os dados na tag lateral sem quebrar o espaço responsivo
     botao.innerHTML = `
       <span>${nome}</span>
-      <span class="macro-info-tag">${kcal.toFixed(0)} kcal | ${prot.toFixed(1)}g P</span>
+      <span class="macro-info-tag">${kcal.toFixed(0)} kcal | ${prot.toFixed(1)}g P | ${gord.toFixed(1)}g G</span>
     `;
     
     botao.onclick = () => selecionarAlimentoNoModal(nome);
