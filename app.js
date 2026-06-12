@@ -86,24 +86,6 @@ async function carregarPerfil() {
 }
 
 /**
- * INTERFACE: atualizarSugestoesAlimentos
- * Preenche o datalist com os alimentos cadastrados na planilha
- */
-function atualizarSugestoesAlimentos(alimentos) {
-  const datalist = document.getElementById("lista-alimentos");
-  
-  // Limpa sugestões antigas para não duplicar
-  datalist.innerHTML = "";
-  
-  // Roda cada alimento da planilha e cria uma opção para o buscador
-  alimentos.forEach(alimento => {
-    const option = document.createElement("option");
-    option.value = alimento.nome; // O que vai ser escrito no campo (ex: "Magic Toast Original")
-    datalist.appendChild(option);
-  });
-}
-
-/**
  * BUSCA DE DADOS: carregarAlimentos (ATUALIZADO COM AUTOCOMPLETE)
  * Baixa a lista de alimentos cadastrados da planilha para uso interno do app.
  */
@@ -116,8 +98,7 @@ async function carregarAlimentos() {
       console.log(`${listaAlimentos.length} alimentos carregados localmente.`);
       
       // TOQUE FINAL: Alimenta o datalist do HTML com os alimentos que acabaram de vir do Sheets
-      atualizarSugestoesAlimentos(listaAlimentos);
-      
+      gerarBotoesAlimentosModal(listaAlimentos);      
     }
   } catch (erro) {
     console.error("Erro ao carregar lista de alimentos:", erro);
@@ -345,5 +326,139 @@ async function concluirExercicioNoSheets(bloco, nomeExercicio, index) {
     console.error("Erro de rede ao salvar treino:", erro);
     botao.innerHTML = `<i class="fa-solid fa-circle-check"></i> Concluir Exercício`;
     botao.style.pointerEvents = "auto";
+  }
+}
+
+/**
+ * INTERFACE: gerarBotoesAlimentosModal
+ * Cria a listagem de botões dentro do modal com os dados carregados do Sheets.
+ */
+function gerarBotoesAlimentosModal(alimentos) {
+  const containerLista = document.getElementById("lista-botoes-alimentos");
+  if (!containerLista) return;
+  
+  containerLista.innerHTML = "";
+  
+  alimentos.forEach(alimento => {
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "item-alimento-btn";
+    botao.setAttribute("data-nome", alimento.nome.toLowerCase());
+    
+    // Mostra o nome do alimento e uma tag sutil com os macros por 100g para referência rápida
+    botao.innerHTML = `
+      <span>${alimento.nome}</span>
+      <span class="macro-info-tag">${alimento.calorias.toFixed(0)} kcal | ${alimento.proteinas.toFixed(1)}g P</span>
+    `;
+    
+    botao.onclick = () => selecionarAlimentoNoModal(alimento.nome);
+    containerLista.appendChild(botao);
+  });
+}
+
+/**
+ * CONTROLE: abrir/fechar Modal
+ */
+function abrirModalAlimentos() {
+  document.getElementById("modal-alimentos").classList.add("open");
+  document.getElementById("busca-modal-input").value = "";
+  filtrarAlimentosModal(); // Garante a lista completa aberta
+  setTimeout(() => document.getElementById("busca-modal-input").focus(), 100);
+}
+
+function fecharModalAlimentos() {
+  document.getElementById("modal-alimentos").classList.remove("open");
+}
+
+/**
+ * RECURSO: Filtragem Inteligente via Input
+ */
+function filtrarAlimentosModal() {
+  const termoBusca = document.getElementById("busca-modal-input").value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const botoes = document.querySelectorAll("#lista-botoes-alimentos .item-alimento-btn");
+  
+  botoes.forEach(btn => {
+    const nomeAlimento = btn.getAttribute("data-nome").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    if (nomeAlimento.includes(termoBusca)) {
+      btn.style.display = "flex";
+    } else {
+      btn.style.display = "none";
+    }
+  });
+}
+
+/**
+ * INTERFACE: Processa a seleção do clique
+ */
+function selecionarAlimentoNoModal(nomeAlimento) {
+  // Atualiza o valor do input hidden para o envio
+  document.getElementById("txt-alimento").value = nomeAlimento;
+  
+  // Muda o texto e estilo do botão de acionamento
+  const btnAbrir = document.getElementById("btn-abrir-busca");
+  document.getElementById("alimento-selecionado-txt").innerText = nomeAlimento;
+  btnAbrir.classList.add("selecionado");
+  
+  fecharModalAlimentos();
+  document.getElementById("input-qtd").focus(); // Joga o cursor direto para digitar os gramas
+}
+
+/**
+ * RECURSO: SALVAR REFEIÇÃO (ATUALIZADO PARA COMPATIBILIDADE COM SELETOR DE CLIQUE)
+ */
+async function enviarRefeicao() {
+  const refeicao = document.getElementById("select-refeicao").value;
+  // Captura o valor do novo input hidden preenchido pelo clique do modal
+  const nomeAlimento = document.getElementById("txt-alimento").value;
+  const quantidade = parseFloat(document.getElementById("input-qtd").value);
+  
+  if (!nomeAlimento || isNaN(quantidade)) {
+    alert("Por favor, selecione um alimento pelo catálogo e preencha a quantidade em gramas.");
+    return;
+  }
+  
+  const alimentoEncontrado = listaAlimentos.find(a => a.nome.toLowerCase() === nomeAlimento.toLowerCase());
+  
+  let kcalCalculadas = 0;
+  let protCalculadas = 0;
+  
+  if (alimentoEncontrado) {
+    kcalCalculadas = (alimentoEncontrado.calorias * quantidade) / 100;
+    protCalculadas = (alimentoEncontrado.proteinas * quantidade) / 100;
+  }
+  
+  const urlEnvio = `${API_URL}?action=salvarRefeicao&refeicao=${encodeURIComponent(refeicao)}&alimento=${encodeURIComponent(nomeAlimento)}&quantidade=${quantidade}&calorias=${kcalCalculadas}&proteinas=${protCalculadas}`;
+  
+  try {
+    const btnLancar = document.querySelector(".btn-action");
+    btnLancar.innerText = "Gravando...";
+    btnLancar.style.pointerEvents = "none";
+
+    const resposta = await fetch(urlEnvio);
+    const resultado = await resposta.json();
+    
+    if (resultado.status === "sucesso") {
+      alert(`Registrado! +${kcalCalculadas.toFixed(0)} kcal e +${protCalculadas.toFixed(1)}g Proteínas.`);
+      
+      const calAtuais = parseFloat(document.getElementById("macro-cal-consumidas").innerText);
+      const protAtuais = parseFloat(document.getElementById("macro-prot-consumidas").innerText);
+      
+      document.getElementById("macro-cal-consumidas").innerText = (calAtuais + kcalCalculadas).toFixed(0);
+      document.getElementById("macro-prot-consumidas").innerText = (protAtuais + protCalculadas).toFixed(1);
+      
+      // Reseta os seletores visuais após gravação concluída com sucesso
+      document.getElementById("txt-alimento").value = "";
+      document.getElementById("input-qtd").value = "";
+      document.getElementById("alimento-selecionado-txt").innerText = "Selecionar Alimento...";
+      document.getElementById("btn-abrir-busca").classList.remove("selected");
+    } else {
+      alert("Erro ao salvar refeição: " + resultado.mensagem);
+    }
+  } catch (erro) {
+    console.error("Erro ao enviar refeição:", erro);
+  } finally {
+    const btnLancar = document.querySelector(".btn-action");
+    btnLancar.innerText = "Lançar no Diário";
+    btnLancar.style.pointerEvents = "auto";
   }
 }
