@@ -331,7 +331,7 @@ async function concluirExercicioNoSheets(bloco, nomeExercicio, index) {
 
 /**
  * INTERFACE: gerarBotoesAlimentosModal
- * Cria a listagem de botões dentro do modal com os dados carregados do Sheets.
+ * Cria a listagem de botões dentro do modal dinamicamente com suporte a futuras adições.
  */
 function gerarBotoesAlimentosModal(alimentos) {
   const containerLista = document.getElementById("lista-botoes-alimentos");
@@ -339,19 +339,36 @@ function gerarBotoesAlimentosModal(alimentos) {
   
   containerLista.innerHTML = "";
   
+  if (!alimentos || alimentos.length === 0) {
+    containerLista.innerHTML = `<p style="text-align:center; color:var(--texto-mutado); padding:20px;">Nenhum alimento encontrado ou carregando...</p>`;
+    return;
+  }
+  
   alimentos.forEach(alimento => {
+    // Tratamento de segurança: garante que o código ache o nome independente do mapeamento
+    const nome = alimento.nome || alimento.Alimento || "Alimento sem nome";
+    
+    // Tratamento de segurança para os macros (evita quebrar se vier null, undefined ou string vazia)
+    let kcal = 0;
+    if (alimento.calorias !== undefined) kcal = parseFloat(alimento.calorias);
+    else if (alimento.Calorias !== undefined) kcal = parseFloat(alimento.Calorias);
+    
+    let prot = 0;
+    if (alimento.proteinas !== undefined) prot = parseFloat(alimento.proteinas);
+    else if (alimento.Proteinas !== undefined) prot = parseFloat(alimento.Proteinas);
+
     const botao = document.createElement("button");
     botao.type = "button";
     botao.className = "item-alimento-btn";
-    botao.setAttribute("data-nome", alimento.nome.toLowerCase());
+    botao.setAttribute("data-nome", nome.toLowerCase());
     
-    // Mostra o nome do alimento e uma tag sutil com os macros por 100g para referência rápida
+    // Injeta o design com os valores tratados com segurança
     botao.innerHTML = `
-      <span>${alimento.nome}</span>
-      <span class="macro-info-tag">${alimento.calorias.toFixed(0)} kcal | ${alimento.proteinas.toFixed(1)}g P</span>
+      <span>${nome}</span>
+      <span class="macro-info-tag">${kcal.toFixed(0)} kcal | ${prot.toFixed(1)}g P</span>
     `;
     
-    botao.onclick = () => selecionarAlimentoNoModal(alimento.nome);
+    botao.onclick = () => selecionarAlimentoNoModal(nome);
     containerLista.appendChild(botao);
   });
 }
