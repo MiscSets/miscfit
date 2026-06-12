@@ -467,3 +467,191 @@ body {
 .btn-check:active {
   transform: scale(0.98);
 }
+
+/* ==========================================================================
+   ESTILOS DO MODAL E BUSCA SELETIVA (MISCFIT MODAL)
+   ========================================================================== */
+.btn-busca-modal {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--borda-suave);
+  padding: 14px;
+  border-radius: 10px;
+  color: var(--texto-claro);
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.btn-busca-modal:focus {
+  border-color: var(--azul-neon);
+}
+
+.btn-busca-modal i {
+  color: var(--texto-mutado);
+}
+
+.btn-busca-modal.selecionado {
+  border-color: var(--verde-neon);
+  background-color: rgba(57, 255, 20, 0.02);
+}
+
+.btn-busca-modal.selecionado i {
+  color: var(--verde-neon);
+}
+
+/* Estrutura do Modal Escuro */
+.modal-container {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(13, 15, 18, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  padding: 16px;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-container.open {
+  display: flex;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.modal-content {
+  background-color: var(--bg-card);
+  border: 1px solid var(--borda-suave);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--borda-suave);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  margin-bottom: 0;
+  font-size: 1.1rem;
+  color: var(--texto-claro);
+}
+
+.btn-fechar-modal {
+  background: none;
+  border: none;
+  color: var(--texto-mutado);
+  font-size: 1.8rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Campo de filtro interno do modal */
+.input-group-modal {
+  position: relative;
+  width: 100%;
+}
+
+.input-group-modal input {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--borda-suave);
+  padding: 12px 12px 12px 40px;
+  border-radius: 10px;
+  color: var(--texto-claro);
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.input-group-modal input:focus {
+  border-color: var(--verde-neon);
+}
+
+.icon-filtro {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--texto-mutado);
+  font-size: 0.9rem;
+}
+
+/* Lista de Itens com Scroll Hidratado */
+.modal-lista-scroll {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+/* Customização básica do scrollbar */
+.modal-lista-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.modal-lista-scroll::-webkit-scrollbar-thumb {
+  background: var(--borda-suave);
+  border-radius: 2px;
+}
+
+/* Botões individuais de Alimentos */
+.item-alimento-btn {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--borda-suave);
+  padding: 14px 16px;
+  border-radius: 12px;
+  color: var(--texto-claro);
+  text-align: left;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+
+.item-alimento-btn .macro-info-tag {
+  font-size: 0.75rem;
+  color: var(--texto-mutado);
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--borda-suave);
+}
+
+.item-alimento-btn:active {
+  background-color: var(--azul-neon);
+  color: #000;
+  border-color: var(--azul-neon);
+}
+
+.item-alimento-btn:active .macro-info-tag {
+  color: #000;
+  border-color: rgba(0,0,0,0.1);
+  background-color: rgba(0,0,0,0.05);
+}
