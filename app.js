@@ -78,7 +78,8 @@ async function carregarPerfil() {
       // Em vez de zerar (0), passa a variável global que guarda a água do dia!
       atualizarProgressoAguaVisual(totalAguaConsumidaHoje);
     } else {
-      alert("Erro ao ler perfil: " + resultado.mensagem);
+      // Substitui o alert antigo pelo Toast customizado com crase
+      mostrarToast(`⚠️ Erro ao ler perfil: ${resultado.mensagem}`);
     }
   } catch (erro) {
     console.error("Erro na requisição de perfil:", erro);
@@ -188,10 +189,10 @@ async function enviarRefeicao() {
   const quantidade = parseFloat(document.getElementById("input-qtd").value);
   
   if (!nomeAlimento || isNaN(quantidade)) {
-    alert("Por favor, preencha o nome do alimento e a quantidade em gramas.");
+    // Substitui o alert antigo de validação pelo Toast dinâmico
+    mostrarToast(`⚠️ Por favor, preencha o nome do alimento e a quantidade em gramas.`);
     return;
   }
-  
   const alimentoEncontrado = listaAlimentos.find(a => a.nome.toLowerCase() === nomeAlimento.toLowerCase());
   
   let kcalCalculadas = 0;
@@ -299,7 +300,8 @@ async function concluirExercicioNoSheets(bloco, nomeExercicio, index) {
   const botao = document.getElementById(`btn-check-${index}`);
 
   if (!seriesFeitas) {
-    alert("Por favor, informe as séries e repetições concluídas.");
+    // Substitui o alert de validação pelo Toast customizado
+    mostrarToast(`⚠️ Por favor, informe as séries e repetições concluídas.`);
     return;
   }
 
@@ -317,8 +319,12 @@ async function concluirExercicioNoSheets(bloco, nomeExercicio, index) {
       botao.style.background = "rgba(57, 255, 20, 0.2)";
       botao.style.color = "var(--verde-neon)";
       botao.style.border = "1px solid var(--verde-neon)";
+      
+      // Opcional: Adiciona um feedback extra no topo da tela para celebrar a série concluída!
+      mostrarToast(`💪 Exercício concluído com sucesso!`);
     } else {
-      alert("Erro ao salvar exercício: " + resultado.mensagem);
+      // Substitui o alert de erro pelo Toast com crase
+      mostrarToast(`⚠️ Erro ao salvar exercício: ${resultado.mensagem}`);
       botao.innerHTML = `<i class="fa-solid fa-circle-check"></i> Concluir Exercício`;
       botao.style.pointerEvents = "auto";
     }
@@ -328,7 +334,6 @@ async function concluirExercicioNoSheets(bloco, nomeExercicio, index) {
     botao.style.pointerEvents = "auto";
   }
 }
-
 /**
  * INTERFACE: gerarBotoesAlimentosModal
  * Cria a listagem de botões dentro do modal dinamicamente incluindo Gorduras.
@@ -425,7 +430,8 @@ async function enviarRefeicao() {
   const quantidade = parseFloat(document.getElementById("input-qtd").value);
   
   if (!nomeAlimento || isNaN(quantidade)) {
-    alert("Por favor, selecione um alimento pelo catálogo e preencha a quantidade em gramas.");
+    // Substitui o alert de validação pelo Toast customizado
+    mostrarToast(`⚠️ Por favor, selecione um alimento pelo catálogo e preencha a quantidade.`);
     return;
   }
   
@@ -450,7 +456,8 @@ async function enviarRefeicao() {
     const resultado = await resposta.json();
     
     if (resultado.status === "sucesso") {
-      alert(`Registrado! +${kcalCalculadas.toFixed(0)} kcal e +${protCalculadas.toFixed(1)}g Proteínas.`);
+      // Substitui o alert de sucesso pelo nosso Toast dinâmico com crases
+      mostrarToast(`Registrado! +${kcalCalculadas.toFixed(0)} kcal e +${protCalculadas.toFixed(1)}g Proteínas.`);
       
       const calAtuais = parseFloat(document.getElementById("macro-cal-consumidas").innerText);
       const protAtuais = parseFloat(document.getElementById("macro-prot-consumidas").innerText);
@@ -464,7 +471,8 @@ async function enviarRefeicao() {
       document.getElementById("alimento-selecionado-txt").innerText = "Selecionar Alimento...";
       document.getElementById("btn-abrir-busca").classList.remove("selected");
     } else {
-      alert("Erro ao salvar refeição: " + resultado.mensagem);
+      // Substitui o alert de erro do servidor pelo Toast
+      mostrarToast(`⚠️ Erro ao salvar refeição: ${resultado.mensagem}`);
     }
   } catch (erro) {
     console.error("Erro ao enviar refeição:", erro);
