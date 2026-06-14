@@ -671,3 +671,51 @@ body {
   border-color: rgba(0,0,0,0.2) !important;
   background-color: rgba(0,0,0,0.08) !important;
 }
+
+/* CONTAINER DOS TOASTS */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: 90%;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none; /* Não atrapalha cliques no fundo */
+}
+
+/* O BALÃO DO TOAST */
+.toast-notification {
+    background-color: #1a1d24; /* Fundo escuro combinando com o app */
+    color: #ffffff;
+    padding: 14px 18px;
+    border-radius: 8px;
+    border-left: 4px solid #00ff66; /* Linha neon na esquerda */
+    box-shadow: 0 4px 15px rgba(0, 255, 102, 0.15); /* Brilho neon sutil */
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: toastIn 0.4s forwards, toastOut 0.4s 2.6s forwards;
+}
+
+/* ANIMAÇÕES DE ENTRADA E SAÍDA */
+@keyframes toastIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes toastOut {
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
