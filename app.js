@@ -209,7 +209,7 @@ async function enviarRefeicao() {
     const resultado = await resposta.json();
     
     if (resultado.status === "sucesso") {
-      alert(`Registrado! +${kcalCalculadas.toFixed(0)} kcal e +${protCalculadas.toFixed(1)}g Proteínas.`);
+     mostrarToast(`Registrado! +${kcalCalculadas.toFixed(0)} kcal e +${protCalculadas.toFixed(1)}g Proteínas.`);
       
       const calAtuais = parseFloat(document.getElementById("macro-cal-consumidas").innerText);
       const protAtuais = parseFloat(document.getElementById("macro-prot-consumidas").innerText);
@@ -219,9 +219,9 @@ async function enviarRefeicao() {
       
       document.getElementById("input-alimento").value = "";
       document.getElementById("input-qtd").value = "";
-    } else {
-      alert("Erro ao salvar refeição: " + resultado.mensagem);
-    }
+      } else {
+      mostrarToast(`⚠️ Erro ao salvar: ${resultado.mensagem}`);
+      }
   } catch (erro) {
     console.error("Erro ao enviar refeição:", erro);
   }
@@ -473,4 +473,25 @@ async function enviarRefeicao() {
     btnLancar.innerText = "Lançar no Diário";
     btnLancar.style.pointerEvents = "auto";
   }
+}
+
+// Função para exibir o Toast Neon customizado
+function mostrarToast(mensagem) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    // Cria o elemento da notificação
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    
+    // Injeta o ícone de check e a mensagem
+    toast.innerHTML = `<span>✔️</span> <span>${mensagem}</span>`;
+
+    // Adiciona no container do topo da tela
+    container.appendChild(toast);
+
+    // Remove do HTML automaticamente após 3 segundos (tempo da animação)
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
